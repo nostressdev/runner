@@ -13,6 +13,7 @@ type Runner struct {
 	resources []Resource
 	jobs      []Job
 	config    Config
+	State     State
 }
 
 func New(config Config, resources []Resource, jobs []Job) *Runner {
@@ -20,6 +21,7 @@ func New(config Config, resources []Resource, jobs []Job) *Runner {
 		resources: resources,
 		jobs:      jobs,
 		config:    config,
+		State:     newImpl(),
 	}
 }
 
@@ -45,6 +47,10 @@ func (runner *Runner) init(ctx context.Context) error {
 }
 
 func (runner *Runner) Run() error {
+	defer func() {
+		runner.State.(*stateImpl).setAlive(false)
+	}()
+
 	ctx := context.Background()
 
 	// Init all resources
@@ -72,9 +78,11 @@ func (runner *Runner) Run() error {
 		jobsDoneCh <- nil
 	}(jobsDoneCh)
 
+	runner.State.(*stateImpl).setReady(true)
+
 	sig := make(chan os.Signal, 1)
-	defer close(sig)
 	signal.Notify(sig, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+
 	select {
 	case jobsError := <-jobsDoneCh:
 		shutdownError := runner.Shutdown()
