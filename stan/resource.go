@@ -36,10 +36,13 @@ func (res *Resource) Release(context.Context) error {
 	return res.StanConn.Close()
 }
 
-func New(provider runner.VariableProvider) *Resource {
+func New(provider runner.VariableProvider) (*Resource, error) {
+	if err := provider.EnsureEnvironmentVariables(VariableGroup, Url, ClusterID, ClientID); err != nil {
+		return nil, err
+	}
 	return &Resource{
 		stanConnURL:   provider.GetString(VariableGroup, Url),
 		stanClusterID: provider.GetString(VariableGroup, ClusterID),
 		stanClientID:  provider.GetString(VariableGroup, ClientID),
-	}
+	}, nil
 }

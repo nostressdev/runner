@@ -47,6 +47,7 @@ func (runner *Runner) init(ctx context.Context) error {
 func (runner *Runner) Run() error {
 	ctx := context.Background()
 
+	// Init all resources
 	if err := runner.init(ctx); err != nil {
 		return err
 	}
@@ -54,6 +55,7 @@ func (runner *Runner) Run() error {
 	var wg sync.WaitGroup
 	jobsDoneCh := make(chan error)
 
+	// Run all jobs
 	for _, job := range runner.jobs {
 		wg.Add(1)
 		go func(jobsDoneCh chan error, job Job) {
@@ -64,6 +66,7 @@ func (runner *Runner) Run() error {
 		}(jobsDoneCh, job)
 	}
 
+	// Wait all jobs to be finished
 	go func(jobsDoneCh chan error) {
 		wg.Wait()
 		jobsDoneCh <- nil
