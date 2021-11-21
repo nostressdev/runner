@@ -15,7 +15,7 @@ type readyLiveHttpJob struct {
 
 func (job *readyLiveHttpJob) Run() error {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/liveness", func(w http.ResponseWriter, r *http.Request) {
 		if job.state.Alive() {
 			w.WriteHeader(200)
 		} else {

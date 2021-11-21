@@ -2,6 +2,7 @@ package listener
 
 import (
 	"context"
+	"fmt"
 	"net"
 )
 
@@ -20,8 +21,8 @@ func (res *Resource) Release(context.Context) error {
 	return res.Listener.Close()
 }
 
-func New(listenAddr string) *Resource {
+func New(config *Config) *Resource {
 	return &Resource{
-		listenAddr: listenAddr,
+		listenAddr: fmt.Sprintf("%s:%s", config.Addr, config.Port),
 	}
 }

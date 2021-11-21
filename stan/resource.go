@@ -7,13 +7,6 @@ import (
 	"time"
 )
 
-const (
-	VariableGroup = "STAN"
-	ClusterID     = "CLUSTER_ID"
-	ClientID      = "CLIENT_ID"
-	Url           = "URL"
-)
-
 type Resource struct {
 	stanConnURL   string
 	stanClusterID string
@@ -36,13 +29,10 @@ func (res *Resource) Release(context.Context) error {
 	return res.StanConn.Close()
 }
 
-func New(provider runner.VariableProvider) (*Resource, error) {
-	if err := provider.EnsureEnvironmentVariables(VariableGroup, Url, ClusterID, ClientID); err != nil {
-		return nil, err
-	}
+func New(config *Config) *Resource {
 	return &Resource{
-		stanConnURL:   provider.GetString(VariableGroup, Url),
-		stanClusterID: provider.GetString(VariableGroup, ClusterID),
-		stanClientID:  provider.GetString(VariableGroup, ClientID),
-	}, nil
+		stanConnURL:   config.StanConnURL,
+		stanClusterID: config.StanClusterID,
+		stanClientID:  config.StanClientID,
+	}
 }
