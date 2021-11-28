@@ -1,4 +1,4 @@
-module runner
+module github.com/nostressdev/runner
 
 go 1.16
 
