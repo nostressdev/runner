@@ -45,7 +45,7 @@ func (job *readyLiveHttpJob) Run() error {
 
 func (job *readyLiveHttpJob) Shutdown(ctx context.Context) error {
 	go func() {
-		if err := job.server.Shutdown(ctx); err != nil {
+		if err := job.server.Shutdown(ctx); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			job.finished <- err
 		} else {
 			job.finished <- nil
