@@ -20,6 +20,7 @@ func (job *readyLiveHttpJob) Run() error {
 	mux.HandleFunc("/liveness", func(w http.ResponseWriter, r *http.Request) {
 		if job.state.Alive() {
 			w.WriteHeader(200)
+			w.Write([]byte("alive"))
 		} else {
 			w.WriteHeader(400)
 		}
@@ -27,6 +28,7 @@ func (job *readyLiveHttpJob) Run() error {
 	mux.HandleFunc("/readiness", func(w http.ResponseWriter, r *http.Request) {
 		if job.state.Ready() {
 			w.WriteHeader(200)
+			w.Write([]byte("ready"))
 		} else {
 			w.WriteHeader(400)
 		}
