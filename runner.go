@@ -25,6 +25,14 @@ func New(config Config, resources []Resource, jobs []Job) *Runner {
 	}
 }
 
+func (runner *Runner) AddJob(job Job) {
+	runner.jobs = append(runner.jobs, job)
+}
+
+func (runner *Runner) AddResource(resource Resource) {
+	runner.resources = append(runner.resources, resource)
+}
+
 func (runner *Runner) init(ctx context.Context) error {
 	initCtx, cancel := context.WithTimeout(ctx, runner.config.InitializationTimeout)
 	defer cancel()
