@@ -7,8 +7,9 @@ import (
 )
 
 type Resource struct {
-	listenAddr string
 	Listener   net.Listener
+	listenAddr string
+	needClose  bool
 }
 
 func (res *Resource) Init(ctx context.Context) error {
@@ -18,11 +19,15 @@ func (res *Resource) Init(ctx context.Context) error {
 }
 
 func (res *Resource) Release(context.Context) error {
-	return res.Listener.Close()
+	if res.needClose {
+		return res.Listener.Close()
+	}
+	return nil
 }
 
 func New(config *Config) *Resource {
 	return &Resource{
 		listenAddr: fmt.Sprintf("%s:%s", config.Addr, config.Port),
+		needClose:  config.NeedClose,
 	}
 }

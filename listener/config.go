@@ -8,8 +8,9 @@ const (
 )
 
 type Config struct {
-	Addr string
-	Port string
+	Addr      string
+	Port      string
+	NeedClose bool
 }
 
 func NewConfigFromProvider(provider runner.VariableProvider, group string) (*Config, error) {
