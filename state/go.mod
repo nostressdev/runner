@@ -1,4 +1,4 @@
-module state
+module github.com/nostressdev/runner/state
 
 go 1.16
 

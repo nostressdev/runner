@@ -1,4 +1,4 @@
-module listener
+module github.com/nostressdev/runner/listener
 
 go 1.16
 
