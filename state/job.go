@@ -11,6 +11,7 @@ type readyLiveHttpJob struct {
 	listener *listener.Resource
 	finished chan error
 	state    runner.State
+	server   *http.Server
 }
 
 func (job *readyLiveHttpJob) Run() error {
@@ -29,15 +30,26 @@ func (job *readyLiveHttpJob) Run() error {
 			w.WriteHeader(400)
 		}
 	})
-	if err := http.Serve(job.listener.Listener, mux); err != nil {
+
+	job.server = &http.Server{
+		Handler: mux,
+	}
+
+	if err := job.server.Serve(job.listener.Listener); err != nil {
 		job.finished <- err
 		return err
 	}
-	job.finished <- nil
 	return nil
 }
 
 func (job *readyLiveHttpJob) Shutdown(ctx context.Context) error {
+	go func() {
+		if err := job.server.Shutdown(ctx); err != nil {
+			job.finished <- err
+		} else {
+			job.finished <- nil
+		}
+	}()
 	select {
 	case <-ctx.Done():
 		return context.DeadlineExceeded
