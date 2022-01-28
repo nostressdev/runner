@@ -13,12 +13,13 @@ type Config struct {
 	NeedClose bool
 }
 
-func NewConfigFromProvider(provider runner.VariableProvider, group string) (*Config, error) {
+func NewConfigFromProvider(provider runner.VariableProvider, group string, needClose bool) (*Config, error) {
 	if err := provider.EnsureEnvironmentVariables(group, Port, Addr); err != nil {
 		return nil, err
 	}
 	return &Config{
-		Addr: provider.GetString(group, Addr),
-		Port: provider.GetString(group, Port),
+		Addr:      provider.GetString(group, Addr),
+		Port:      provider.GetString(group, Port),
+		NeedClose: needClose,
 	}, nil
 }
