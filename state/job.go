@@ -2,9 +2,9 @@ package state
 
 import (
 	"context"
+	"github.com/nostressdev/runner"
+	"github.com/nostressdev/runner/listener"
 	"net/http"
-	"runner"
-	"runner/listener"
 )
 
 type readyLiveHttpJob struct {

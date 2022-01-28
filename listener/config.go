@@ -1,6 +1,6 @@
 package listener
 
-import "runner"
+import "github.com/nostressdev/runner"
 
 const (
 	Port = "PORT"
