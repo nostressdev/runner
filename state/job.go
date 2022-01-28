@@ -2,6 +2,7 @@ package state
 
 import (
 	"context"
+	"errors"
 	"github.com/nostressdev/runner"
 	"github.com/nostressdev/runner/listener"
 	"net/http"
@@ -35,7 +36,7 @@ func (job *readyLiveHttpJob) Run() error {
 		Handler: mux,
 	}
 
-	if err := job.server.Serve(job.listener.Listener); err != nil {
+	if err := job.server.Serve(job.listener.Listener); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		job.finished <- err
 		return err
 	}
